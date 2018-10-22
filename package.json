@@ -1,0 +1,41 @@
+{
+  "name": "jwt-authentication-solution",
+  "version": "1.0.0",
+  "description": "End to end authentication solution",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-2\"",
+    "build": "babel src -s -D -d dist --presets es2015,stage-2",
+    "start": "node dist",
+    "prestart": "npm run -s build",
+    "test": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nimjetushar/jwt-authentication-solution.git"
+  },
+  "author": "Tushar Nimje",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nimjetushar/jwt-authentication-solution/issues"
+  },
+  "homepage": "https://github.com/nimjetushar/jwt-authentication-solution#readme",
+  "dependencies": {
+    "bcrypt": "^3.0.0",
+    "body-parser": "^1.13.3",
+    "compression": "^1.5.2",
+    "cors": "^2.7.1",
+    "express": "^4.13.3",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.2.16",
+    "morgan": "^1.8.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-2": "^6.24.1",
+    "eslint": "^3.1.1",
+    "nodemon": "^1.9.2"
+  }
+}
