@@ -13,4 +13,7 @@ The implementaion is based on JWT tokken having concept of refresh tokken and au
 
 ## Licence
 
+[![GitHub license](https://img.shields.io/github/license/nimjetushar/jwt-authentication-solution.svg)](https://github.com/nimjetushar/jwt-authentication-solution/blob/master/LICENSE)
+
+
 
