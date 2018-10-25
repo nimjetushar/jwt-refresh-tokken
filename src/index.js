@@ -28,9 +28,6 @@ app.use(
 
 // connect to db
 initializeDb(config).then(db => {
-  // internal middleware
-  app.use(middleware({ config, db }));
-
   // api router
   app.use("/api", api({ config, db }));
 
