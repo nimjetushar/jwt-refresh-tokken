@@ -1,0 +1,6 @@
+{
+  "port": 8080,
+  "bodyLimit": "100kb",
+  "corsHeaders": ["Link"],
+  "db_url": "mongodb://localhost:27017/authorization"
+}

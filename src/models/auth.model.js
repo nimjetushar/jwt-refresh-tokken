@@ -3,12 +3,15 @@ import jwt from "jsonwebtoken";
 import UserModel from "../schema/user.schema";
 import { USER_ROLE_REGULAR } from "../constant/constants";
 import errorObj from "../constant/error";
+import config from "../config.json";
 
 import {
   passwordEncryptionLogic,
   verifyUserPassword,
   secretKey
 } from "../common/encrypt";
+
+const token_stack = {};
 
 /**
  * find the user into db based on the passed criteria
@@ -74,6 +77,41 @@ export function createUser(req, res, next) {
 }
 
 /**
+ * provides tokken based on authentication
+ * @param {*} config
+ * @returns
+ */
+function jwtSign(body, config) {
+  return new Promise((resolve, reject) => {
+    jwt.sign(
+      body,
+      secretKey,
+      {
+        expiresIn: config.expireTime
+      },
+      (err, token) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(token);
+      }
+    );
+  });
+}
+
+/**
+ * logic to generate auth and reset token at same time
+ * @param {*} body
+ * @returns
+ */
+function tokenCreationLogic(body) {
+  const promiseArr = [];
+  promiseArr.push(jwtSign(body, { expireTime: config.auth_token_timeout }));
+  promiseArr.push(jwtSign(body, { expireTime: config.refresh_token_timeout }));
+  return Promise.all(promiseArr);
+}
+
+/**
  * finds the user and verifies the user details and
  * returns valid JWT tokken to user
  * @export
@@ -95,13 +133,25 @@ export function authenticateUser(req, res, next) {
           userDetail.password
         );
         if (status) {
-          const tokken = jwt.sign(body, secretKey);
-          res.json({
-            email: userDetail.email,
-            name: userDetail.name,
-            role: userDetail.role,
-            tokken: tokken
-          });
+          tokenCreationLogic(body)
+            .then(tokenData => {
+              const authToken = tokenData[0],
+                resetToken = tokenData[1],
+                responsObj = {
+                  email: userDetail.email,
+                  name: userDetail.name,
+                  role: userDetail.role,
+                  tokken: authToken
+                };
+
+              token_stack[authToken] = Object.assign({}, responsObj, {
+                resetToken: resetToken
+              });
+              res.json(responsObj);
+            })
+            .catch(err => {
+              return next(errorObj.INTERNAL_SERVER_ERROR);
+            });
         } else {
           return next(errorObj.INVALID_PASSWORD);
         }
@@ -112,4 +162,17 @@ export function authenticateUser(req, res, next) {
     .catch(err => {
       return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
     });
+}
+
+/**
+ * deletes the entry from the token stack
+ * @export
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ */
+export function logout(req, res, next) {
+  const authToken = "";
+  delete token_stack[authToken];
+  res.json({ logout: true });
 }
