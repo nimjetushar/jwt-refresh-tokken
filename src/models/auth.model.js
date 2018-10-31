@@ -119,7 +119,7 @@ function tokenCreationLogic(body) {
  * @param {Response} res
  * @param {NextFunction} next
  */
-export function authenticateUser(req, res, next) {
+export function loginUser(req, res, next) {
   const body = req.body;
   const { username, password } = body;
 
@@ -136,7 +136,7 @@ export function authenticateUser(req, res, next) {
           tokenCreationLogic(body)
             .then(tokenData => {
               const authToken = tokenData[0],
-                resetToken = tokenData[1],
+                refreshToken = tokenData[1],
                 responsObj = {
                   email: userDetail.email,
                   name: userDetail.name,
@@ -145,7 +145,7 @@ export function authenticateUser(req, res, next) {
                 };
 
               token_stack[authToken] = Object.assign({}, responsObj, {
-                resetToken: resetToken
+                refreshToken: refreshToken
               });
               res.json(responsObj);
             })
@@ -175,4 +175,21 @@ export function logout(req, res, next) {
   const authToken = "";
   delete token_stack[authToken];
   res.json({ logout: true });
+}
+
+export function verifyToken(token) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, secretKey, (err, decoded) => {
+      if (err) {
+        const refreshToken = token_stack[token].refreshToken;
+        jwt.verify(refreshToken, secretKey, (err, decoded) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(decoded);
+        });
+      }
+      resolve(decoded);
+    });
+  });
 }
