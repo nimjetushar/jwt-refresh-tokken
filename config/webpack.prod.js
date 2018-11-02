@@ -7,7 +7,7 @@ const path = require("path");
 module.exports = webpackMerge(commonConfig, {
   mode: "production",
   output: {
-    path: path.resolve(__dirname, "dist/client"),
+    path: path.resolve(__dirname, "../dist/client"),
     publicPath: "./",
     filename: "[name].js",
     chunkFilename: "[id].chunk.js"

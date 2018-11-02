@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-2\"",
-    "build": "babel src -s -D -d dist --presets es2015,stage-2",
-    "build:client": "rimraf dist && webpack --env.production",
-    "start": "node dist",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "rimraf dist/server && babel src -s -d dist/server --presets es2015,stage-2",
+    "build:client": "rimraf dist/client && webpack --env.production",
+    "start": "npm run start:server && npm run start:client",
+    "start:server": "node dist/server",
     "start:client": "webpack-dev-server --hot",
     "prestart": "npm run -s build",
     "lint": "eslint src"

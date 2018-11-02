@@ -9,7 +9,7 @@ module.exports = webpackMerge(commonConfig, {
   mode: "development",
 
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "../dist"),
     publicPath: `http://localhost:${port}/`,
     filename: "[name].js",
     chunkFilename: "[id].chunk.js"

@@ -14,7 +14,6 @@ const app = express(),
 // logger
 app.use(morgan("dev"));
 
-// 3rd party middleware
 app.use(
   cors({
     exposedHeaders: config.corsHeaders
