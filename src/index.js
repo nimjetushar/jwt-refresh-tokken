@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
+
 import initializeDb from "./db";
 import api from "./controllers";
 import config from "./config.json";

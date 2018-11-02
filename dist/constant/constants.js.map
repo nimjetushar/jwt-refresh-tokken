@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../src/constant/constants.js"],"names":["USER_ROLE_ADMIN","USER_ROLE_REGULAR"],"mappings":";;;;;AAAO,IAAMA,4CAAkB,OAAxB;AACA,IAAMC,gDAAoB,MAA1B","file":"constants.js","sourcesContent":["export const USER_ROLE_ADMIN = \"admin\";\r\nexport const USER_ROLE_REGULAR = \"user\";\r\n"]}
