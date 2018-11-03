@@ -15,6 +15,10 @@ const errorObj = {
     status: 401,
     message: "invalid username"
   },
+  TOKEN_EXPIRED: {
+    status: 401,
+    message: "tiken expired"
+  },
   NO_DATA_FOUND: {
     status: 201,
     message: "no data found"

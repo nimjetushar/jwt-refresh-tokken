@@ -10,8 +10,10 @@ import {
   verifyUserPassword,
   secretKey
 } from "../common/encrypt";
+import User from "./user.model";
 
 const token_stack = {};
+const userObj = new User();
 
 /**
  * find the user into db based on the passed criteria
@@ -120,7 +122,7 @@ function tokenCreationLogic(body) {
  * @param {NextFunction} next
  */
 export function loginUser(req, res, next) {
-  const body = req.body;
+  const body = userObj.getUserCredentail(req.body);
   const { username, password } = body;
 
   findUser({ email: username })
@@ -141,7 +143,8 @@ export function loginUser(req, res, next) {
                   email: userDetail.email,
                   name: userDetail.name,
                   role: userDetail.role,
-                  tokken: authToken
+                  tokken: authToken,
+                  loginTime: body.loginTime
                 };
 
               token_stack[authToken] = Object.assign({}, responsObj, {
@@ -177,11 +180,20 @@ export function logout(req, res, next) {
   res.json({ logout: true });
 }
 
+/**
+ * verify the auth token if expired verify for refresh token and based on
+ * that generated new auth token
+ * @export
+ * @param {*} token
+ * @returns
+ */
 export function verifyToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (err, decoded) => {
       if (err) {
-        const refreshToken = token_stack[token].refreshToken;
+        const refreshData = token_stack[token],
+          refreshToken = refreshData.refreshToken;
+
         jwt.verify(refreshToken, secretKey, (err, decoded) => {
           if (err) {
             reject(err);

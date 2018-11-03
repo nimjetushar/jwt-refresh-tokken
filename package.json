@@ -4,14 +4,12 @@
   "description": "End to end authentication solution",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-2\"",
     "build": "npm run build:server && npm run build:client",
     "build:server": "rimraf dist/server && babel src -s -d dist/server --presets es2015,stage-2",
     "build:client": "rimraf dist/client && webpack --env.production",
     "start": "npm run start:server && npm run start:client",
-    "start:server": "node dist/server",
-    "start:client": "webpack-dev-server --hot",
-    "prestart": "npm run -s build",
+    "server": "nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-2\"",
+    "client": "webpack-dev-server --hot",
     "lint": "eslint src"
   },
   "repository": {
