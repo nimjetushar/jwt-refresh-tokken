@@ -143,7 +143,7 @@ export function loginUser(req, res, next) {
                   email: userDetail.email,
                   name: userDetail.name,
                   role: userDetail.role,
-                  tokken: authToken,
+                  token: authToken,
                   loginTime: body.loginTime
                 };
 

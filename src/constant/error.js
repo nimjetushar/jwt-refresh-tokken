@@ -17,7 +17,7 @@ const errorObj = {
   },
   TOKEN_EXPIRED: {
     status: 401,
-    message: "tiken expired"
+    message: "token expired"
   },
   NO_DATA_FOUND: {
     status: 201,

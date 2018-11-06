@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const LoginFormComponent = ({ loginDetail, ...params }) => {
   return (
     <div className="form">
-      <form className="login-form" onSubmit={params.submitForm}>
+      <form className="login-form" name="login-form" onSubmit={params.submitForm}>
         <input
           type="text"
           placeholder="username"

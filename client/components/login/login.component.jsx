@@ -30,8 +30,7 @@ class LoginComponent extends Component {
   }
 
   bindThis() {
-    this.handleLoginFormChange = this.handleLoginFormChange.bind(this);
-    this.handleRegFormChange = this.handleRegFormChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.toggleForms = this.toggleForms.bind(this);
     this.login = this.login.bind(this);
     this.createUser = this.createUser.bind(this);
@@ -55,20 +54,22 @@ class LoginComponent extends Component {
     );
   }
 
-  handleLoginFormChange(e) {
-    const formObj = this.state.loginForm;
-    this.handleChange(e, formObj);
-  }
+  handleChange(e) {
+    const { name, value, form } = e.target,
+      formName = form.name;
+    let formObj = {},
+      currentForm;
 
-  handleRegFormChange(e) {
-    const formObj = this.state.registrationForm;
-    this.handleChange(e, formObj);
-  }
+    if (formName === "login-form") {
+      formObj = Object.assign({}, this.state.loginForm);
+      currentForm = "loginForm";
+    } else {
+      formObj = this.state.registrationForm;
+      currentForm = "registrationForm";
+    }
 
-  handleChange(e, formObj) {
-    const { name, value } = e.target;
     formObj[name] = value;
-    this.setState({ currentForm: formObj });
+    this.setState({ [currentForm]: formObj });
   }
 
   toggleForms() {
@@ -81,14 +82,14 @@ class LoginComponent extends Component {
         {this.state.isRegistrationForm ? (
           <RegistrationFormComponent
             userDetail={this.state.registrationForm}
-            handleChange={this.handleRegFormChange}
+            handleChange={this.handleChange}
             toggleForms={this.toggleForms}
             submitForm={this.createUser}
           />
         ) : (
           <LoginFormComponent
             loginDetail={this.state.loginForm}
-            handleChange={this.handleLoginFormChange}
+            handleChange={this.handleChange}
             toggleForms={this.toggleForms}
             submitForm={this.login}
           />
@@ -108,8 +109,7 @@ LoginComponent.propTypes = {
     email: PropTypes.string,
     password: PropTypes.string
   }),
-  isRegistrationForm: PropTypes.bool,
-  loginUser: PropTypes.func.isRequired
+  isRegistrationForm: PropTypes.bool
 };
 
 export default LoginComponent;

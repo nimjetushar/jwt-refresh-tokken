@@ -4,7 +4,11 @@ import PropTypes from "prop-types";
 const RegistrationFormComponent = ({ userDetail, ...params }) => {
   return (
     <div className="form">
-      <form className="register-form" onSubmit={params.submitForm}>
+      <form
+        className="register-form"
+        name="register-form"
+        onSubmit={params.submitForm}
+      >
         <input
           type="text"
           placeholder="name"
