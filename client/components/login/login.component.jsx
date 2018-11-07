@@ -40,7 +40,7 @@ class LoginComponent extends Component {
     e.preventDefault();
     login(this.state.loginForm)
       .then(res => {
-        this.setState({ errorMsg: "" });
+        this.props.history.push("/home");
       })
       .catch(err => {
         this.setState({ errorMsg: err.message });

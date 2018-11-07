@@ -191,17 +191,21 @@ export function verifyToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (err, decoded) => {
       if (err) {
-        const refreshData = token_stack[token],
-          refreshToken = refreshData.refreshToken;
-
-        jwt.verify(refreshToken, secretKey, (err, decoded) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(decoded);
-        });
+        const refreshData = token_stack[token];
+        if (refreshData) {
+          const refreshToken = refreshData.refreshToken;
+          // jwt.verify(refreshToken, secretKey, (err, decoded) => {
+          //   if (err) {
+          //     reject(err);
+          //   }
+          //   resolve(decoded);
+          // });
+          reject(err);
+        } else {
+          reject(err);
+        }
       }
-      resolve(decoded);
+      resolve(Object.assign({}, decoded, { token: token }));
     });
   });
 }
