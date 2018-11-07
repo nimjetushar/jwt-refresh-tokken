@@ -7,11 +7,16 @@ export function createUser(data) {
 }
 
 export function login(data) {
-  return postReq(loginUrl, data)
-    .then(res => {
-      new AuthService().setAuthToken(res);
-    })
-    .catch(err => console.log(err));
+  return new Promise((resolve, reject) => {
+    postReq(loginUrl, data)
+      .then(res => {
+        new AuthService().setAuthToken(res);
+        resolve(res);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
 }
 
 export function getData() {

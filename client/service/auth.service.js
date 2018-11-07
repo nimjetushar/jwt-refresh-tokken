@@ -20,8 +20,8 @@ export default class AuthService {
 
   setAuthToken(data) {
     _authToken = data.token;
-    sessionStorage.setItem(LS_AUTH_TOKEN, data.token);
     _userDetail = data;
+    sessionStorage.setItem(LS_AUTH_TOKEN, _authToken);
     sessionStorage.setItem(LS_USER_DETAIL, JSON.stringify(data));
   }
 

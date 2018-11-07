@@ -4,7 +4,11 @@ import PropTypes from "prop-types";
 const LoginFormComponent = ({ loginDetail, ...params }) => {
   return (
     <div className="form">
-      <form className="login-form" name="login-form" onSubmit={params.submitForm}>
+      <form
+        className="login-form"
+        name="login-form"
+        onSubmit={params.submitForm}
+      >
         <input
           type="text"
           placeholder="username"
@@ -25,6 +29,7 @@ const LoginFormComponent = ({ loginDetail, ...params }) => {
           Not registered?
           <span onClick={params.toggleForms}>Create an account</span>
         </p>
+        {params.errorMsg ? <p className="message error">{params.errorMsg}</p> : ""}
       </form>
     </div>
   );
@@ -34,7 +39,8 @@ LoginFormComponent.protoType = {
   submitForm: PropTypes.func.isRequired,
   handleChange: PropTypes.func.isRequired,
   toggleForms: PropTypes.func.isRequired,
-  loginDetail: PropTypes.object.handleChange
+  loginDetail: PropTypes.object.handleChange,
+  errorMsg: PropTypes.string.isRequired
 };
 
 export default LoginFormComponent;

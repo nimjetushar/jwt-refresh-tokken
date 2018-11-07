@@ -38,7 +38,13 @@ class LoginComponent extends Component {
 
   login(e) {
     e.preventDefault();
-    login(this.state.loginForm);
+    login(this.state.loginForm)
+      .then(res => {
+        this.setState({ errorMsg: "" });
+      })
+      .catch(err => {
+        this.setState({ errorMsg: err.message });
+      });
   }
 
   createUser(e) {
@@ -92,6 +98,7 @@ class LoginComponent extends Component {
             handleChange={this.handleChange}
             toggleForms={this.toggleForms}
             submitForm={this.login}
+            errorMsg={this.state.errorMsg}
           />
         )}
       </div>
