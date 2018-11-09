@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   EXCLUDE_AUTH_TOKEN,
   SUCCESS_STATUS_API
@@ -22,32 +23,35 @@ function reqObj(url, obj, data) {
 
   if (!skipAuthToken(url)) {
     const token = authService.authToken;
-    headerObj = Object.assign({}, headerObj, { "x-auth-token": token });
+    headerObj = Object.assign({}, headerObj, { authorization: token });
   }
 
   const requestObj = {
-    cache: "no-cache",
     headers: headerObj,
-    body: JSON.stringify(data)
+    data: data,
+    url: url
   };
   return [url, Object.assign(obj, requestObj)];
 }
 
 function callApi(url, options) {
   return new Promise((resolve, reject) => {
-    fetch(url, options).then(res => {
-      res.json().then(parsedData => {
+    axios(options)
+      .then(res => {
+        const parsedData = res.data;
         if (SUCCESS_STATUS_API.includes(res.status)) {
           if (!skipAuthToken(url) && res.headers) {
-            const authToken = res.headers["x-auth-token"];
+            const authToken = res.headers["authorization"];
             authService.updateAuthToken(authToken);
           }
           resolve(parsedData);
         } else {
           reject(parsedData);
         }
+      })
+      .catch(err => {
+        reject(err);
       });
-    });
   });
 }
 

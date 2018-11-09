@@ -4,16 +4,12 @@ import UserModel from "../schema/user.schema";
 import { USER_ROLE_REGULAR } from "../constant/constants";
 import errorObj from "../constant/error";
 import config from "../config.json";
-
-import {
-  passwordEncryptionLogic,
-  verifyUserPassword,
-  secretKey
-} from "../common/encrypt";
+import encrypt from "../common/encrypt";
 import User from "./user.model";
 
 const token_stack = {};
-const userObj = new User();
+const userModel = new User();
+const secretKey = encrypt.secretKey;
 
 /**
  * find the user into db based on the passed criteria
@@ -63,15 +59,21 @@ export function createUser(req, res, next) {
       if (data && data.length) {
         return next(errorObj.USERNAME_EXIST);
       }
-      const userPwd = passwordEncryptionLogic(body.email, body.password);
-      userObj.password = userPwd;
+      encrypt
+        .passwordEncryptionLogic(body.email, body.password)
+        .then(userPwd => {
+          userObj.password = userPwd;
 
-      UserModel.create(userObj, (err, user) => {
-        if (err) {
+          UserModel.create(userObj, (err, user) => {
+            if (err) {
+              return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
+            }
+            res.json(user);
+          });
+        })
+        .catch(err => {
           return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
-        }
-        res.json(user);
-      });
+        });
     })
     .catch(err => {
       return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
@@ -83,33 +85,31 @@ export function createUser(req, res, next) {
  * @param {*} config
  * @returns
  */
-function jwtSign(body, config) {
+function jwtSign(reqObj, config) {
   return new Promise((resolve, reject) => {
-    jwt.sign(
-      body,
-      secretKey,
-      {
-        expiresIn: config.expireTime
-      },
-      (err, token) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(token);
+    jwt.sign(reqObj, secretKey, config, (err, token) => {
+      if (err) {
+        return reject(err);
       }
-    );
+      return resolve(token);
+    });
   });
 }
 
 /**
  * logic to generate auth and reset token at same time
- * @param {*} body
+ * @param {*} reqObj
  * @returns
  */
-function tokenCreationLogic(body) {
+function tokenCreationLogic(reqObj) {
   const promiseArr = [];
-  promiseArr.push(jwtSign(body, { expireTime: config.auth_token_timeout }));
-  promiseArr.push(jwtSign(body, { expireTime: config.refresh_token_timeout }));
+  promiseArr.push(
+    jwtSign(reqObj, {
+      expiresIn: config.auth_token_timeout,
+      jwtid: `${reqObj.loginTime}`
+    })
+  );
+  promiseArr.push(jwtSign(reqObj, { expiresIn: config.refresh_token_timeout }));
   return Promise.all(promiseArr);
 }
 
@@ -122,42 +122,40 @@ function tokenCreationLogic(body) {
  * @param {NextFunction} next
  */
 export function loginUser(req, res, next) {
-  const body = userObj.getUserCredentail(req.body);
-  const { username, password } = body;
+  const reqObj = userModel.getUserCredentail(req.body);
+  const { username, password } = reqObj;
 
   findUser({ email: username })
     .then(data => {
       if (data && data.length) {
         const userDetail = data[0];
-        const status = verifyUserPassword(
-          username,
-          password,
-          userDetail.password
-        );
-        if (status) {
-          tokenCreationLogic(body)
-            .then(tokenData => {
-              const authToken = tokenData[0],
-                refreshToken = tokenData[1],
-                responsObj = {
-                  email: userDetail.email,
-                  name: userDetail.name,
-                  role: userDetail.role,
-                  token: authToken,
-                  loginTime: body.loginTime
-                };
+        encrypt
+          .verifyUserPassword(username, password, userDetail.password)
+          .then(status => {
+            tokenCreationLogic(reqObj)
+              .then(tokenData => {
+                const authToken = tokenData[0],
+                  refreshToken = tokenData[1],
+                  responsObj = {
+                    email: userDetail.email,
+                    name: userDetail.name,
+                    role: userDetail.role,
+                    token: authToken,
+                    loginTime: reqObj.loginTime
+                  };
 
-              token_stack[authToken] = Object.assign({}, responsObj, {
-                refreshToken: refreshToken
+                token_stack[authToken] = Object.assign({}, responsObj, {
+                  refreshToken: refreshToken
+                });
+                res.json(responsObj);
+              })
+              .catch(err => {
+                return next(errorObj.INTERNAL_SERVER_ERROR);
               });
-              res.json(responsObj);
-            })
-            .catch(err => {
-              return next(errorObj.INTERNAL_SERVER_ERROR);
-            });
-        } else {
-          return next(errorObj.INVALID_PASSWORD);
-        }
+          })
+          .catch(err => {
+            return next(errorObj.INVALID_PASSWORD);
+          });
       } else {
         return next(errorObj.INVAILD_USERNAME);
       }
@@ -189,23 +187,37 @@ export function logout(req, res, next) {
  */
 export function verifyToken(token) {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, secretKey, (err, decoded) => {
+    jwt.verify(token, secretKey, (err, authDecoded) => {
       if (err) {
         const refreshData = token_stack[token];
         if (refreshData) {
           const refreshToken = refreshData.refreshToken;
-          // jwt.verify(refreshToken, secretKey, (err, decoded) => {
-          //   if (err) {
-          //     reject(err);
-          //   }
-          //   resolve(decoded);
-          // });
-          reject(err);
+          jwt.verify(refreshToken, secretKey, (err, refreshDecoded) => {
+            if (err) {
+              return reject(err);
+            }
+            const reqObj = userModel.getUserCredentail(refreshDecoded),
+              jwtOptions = {
+                expiresIn: config.auth_token_timeout,
+                jwtid: `${reqObj.loginTime}`
+              };
+
+            jwtSign(reqObj, jwtOptions)
+              .then(authToken => {
+                resolve(
+                  Object.assign({}, refreshDecoded, { token: authToken })
+                );
+              })
+              .catch(err => {
+                reject(err);
+              });
+          });
         } else {
           reject(err);
         }
+      } else {
+        resolve(Object.assign({}, authDecoded, { token: token }));
       }
-      resolve(Object.assign({}, decoded, { token: token }));
     });
   });
 }

@@ -1,11 +1,22 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.css"
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.css";
 
-import Routes from "./routes";
+import loginComponent from "./components/login/login.component";
+import HomeComponent from "./components/home/home.component";
 
-ReactDOM.render(
-  <BrowserRouter>{Routes}</BrowserRouter>,
-  document.getElementById("container")
-);
+class Main extends Component {
+  render() {
+    return (
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={loginComponent} />
+          <Route exact path="/home" component={HomeComponent} />
+        </Switch>
+      </BrowserRouter>
+    );
+  }
+}
+
+ReactDOM.render(<Main />, document.getElementById("container"));

@@ -7,7 +7,7 @@
     "build": "npm run build:server && npm run build:client",
     "build:server": "rimraf dist/server && babel src -s -d dist/server --presets es2015,stage-2",
     "build:client": "rimraf dist/client && webpack --env.production",
-    "start": "npm run start:server && npm run start:client",
+    "start": "npm run server && npm run client",
     "server": "nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-2\"",
     "client": "webpack-dev-server --hot",
     "lint": "eslint src"
@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/nimjetushar/jwt-authentication-solution#readme",
   "dependencies": {
+    "axios": "0.18.0",
     "babel-polyfill": "6.26.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.13.3",
@@ -30,6 +31,7 @@
     "compression": "1.5.2",
     "cors": "2.7.1",
     "express": "4.13.3",
+    "helmet": "3.15.0",
     "jsonwebtoken": "8.3.0",
     "mongoose": "5.2.16",
     "morgan": "1.8.0",

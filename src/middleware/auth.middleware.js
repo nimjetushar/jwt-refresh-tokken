@@ -2,11 +2,14 @@ import { verifyToken } from "../models/auth.model";
 import errorObj from "../constant/error";
 
 const isUserAuthenticated = function(req, res, next) {
-  const token = req.headers["x-auth-token"];
+  const token = req.headers["authorization"];
   verifyToken(token)
     .then(tokendata => {
       const headerToken = tokendata.token;
-      res.set({ "x-auth-token": headerToken });
+      res.set({
+        authorization: headerToken,
+        "Access-Control-Expose-Headers": "authorization"
+      });
       next();
     })
     .catch(err => {

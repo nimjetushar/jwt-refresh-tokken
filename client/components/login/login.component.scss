@@ -74,5 +74,6 @@
 .login-form {
     .message.error {
         color: red;
+        text-transform: capitalize;
     }
 }
