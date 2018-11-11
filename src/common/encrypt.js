@@ -11,6 +11,7 @@ const concatStr = "$-$",
  */
 function baseConverter(username, pwd) {
   const joinedStr = `${username}${concatStr}${pwd}`;
+
   return Buffer.from(joinedStr).toString("base64");
 }
 
@@ -24,9 +25,10 @@ export default class Encrypt {
    * @returns {Promise}
    */
   static passwordEncryptionLogic(username, pwd) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       const baseConverted = baseConverter(username, pwd);
-      bcrypt.hash(baseConverted, salt, function(err, hash) {
+
+      bcrypt.hash(baseConverted, salt, (err, hash) => {
         if (err) {
           return reject(err);
         }
@@ -43,9 +45,10 @@ export default class Encrypt {
    * @returns {Promise}
    */
   static verifyUserPassword(username, pwd, dbPwd) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       const pwdMerge = baseConverter(username, pwd);
-      bcrypt.compare(pwdMerge, dbPwd, function(err, res) {
+
+      bcrypt.compare(pwdMerge, dbPwd, (err, res) => {
         if (err) {
           return reject(err);
         }

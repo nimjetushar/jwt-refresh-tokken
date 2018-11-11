@@ -7,9 +7,9 @@ import config from "../config.json";
 import encrypt from "../common/encrypt";
 import User from "./user.model";
 
-const token_stack = {};
-const userModel = new User();
-const secretKey = encrypt.secretKey;
+const tokenStack = {},
+  userModel = new User(),
+  secretKey = encrypt.secretKey;
 
 /**
  * find the user into db based on the passed criteria
@@ -43,9 +43,9 @@ export function createUser(req, res, next) {
       password: body.password,
       role: body.role || USER_ROLE_REGULAR
     },
-    userData = new UserModel(userObj);
+    userData = new UserModel(userObj),
+    error = userData.validateSync();
 
-  const error = userData.validateSync();
   if (error) {
     return next({
       error: error,
@@ -82,12 +82,13 @@ export function createUser(req, res, next) {
 
 /**
  * provides tokken based on authentication
- * @param {*} config
+ * @param {*} reqObj
+ * @param {*} jwtConfig
  * @returns
  */
-function jwtSign(reqObj, config) {
+function jwtSign(reqObj, jwtConfig) {
   return new Promise((resolve, reject) => {
-    jwt.sign(reqObj, secretKey, config, (err, token) => {
+    jwt.sign(reqObj, secretKey, jwtConfig, (err, token) => {
       if (err) {
         return reject(err);
       }
@@ -103,6 +104,7 @@ function jwtSign(reqObj, config) {
  */
 function tokenCreationLogic(reqObj) {
   const promiseArr = [];
+
   promiseArr.push(
     jwtSign(reqObj, {
       expiresIn: config.auth_token_timeout,
@@ -122,16 +124,17 @@ function tokenCreationLogic(reqObj) {
  * @param {NextFunction} next
  */
 export function loginUser(req, res, next) {
-  const reqObj = userModel.getUserCredentail(req.body);
-  const { username, password } = reqObj;
+  const reqObj = userModel.getUserCredentail(req.body),
+    { username, password } = reqObj;
 
   findUser({ email: username })
     .then(data => {
       if (data && data.length) {
         const userDetail = data[0];
+
         encrypt
           .verifyUserPassword(username, password, userDetail.password)
-          .then(status => {
+          .then(() => {
             tokenCreationLogic(reqObj)
               .then(tokenData => {
                 const authToken = tokenData[0],
@@ -144,16 +147,16 @@ export function loginUser(req, res, next) {
                     loginTime: reqObj.loginTime
                   };
 
-                token_stack[authToken] = Object.assign({}, responsObj, {
+                tokenStack[authToken] = Object.assign({}, responsObj, {
                   refreshToken: refreshToken
                 });
                 res.json(responsObj);
               })
-              .catch(err => {
+              .catch(() => {
                 return next(errorObj.INTERNAL_SERVER_ERROR);
               });
           })
-          .catch(err => {
+          .catch(() => {
             return next(errorObj.INVALID_PASSWORD);
           });
       } else {
@@ -172,9 +175,10 @@ export function loginUser(req, res, next) {
  * @param {Response} res
  * @param {NextFunction} next
  */
-export function logout(req, res, next) {
-  const authToken = "";
-  delete token_stack[authToken];
+export function logout(req, res) {
+  const authToken = req.headers.authorization;
+
+  delete tokenStack[authToken];
   res.json({ logout: true });
 }
 
@@ -189,12 +193,14 @@ export function verifyToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (err, authDecoded) => {
       if (err) {
-        const refreshData = token_stack[token];
+        const refreshData = tokenStack[token];
+
         if (refreshData) {
           const refreshToken = refreshData.refreshToken;
-          jwt.verify(refreshToken, secretKey, (err, refreshDecoded) => {
-            if (err) {
-              return reject(err);
+
+          jwt.verify(refreshToken, secretKey, (verifyErr, refreshDecoded) => {
+            if (verifyErr) {
+              return reject(verifyErr);
             }
             const reqObj = userModel.getUserCredentail(refreshDecoded),
               jwtOptions = {
@@ -208,8 +214,8 @@ export function verifyToken(token) {
                   Object.assign({}, refreshDecoded, { token: authToken })
                 );
               })
-              .catch(err => {
-                reject(err);
+              .catch(signErr => {
+                reject(signErr);
               });
           });
         } else {

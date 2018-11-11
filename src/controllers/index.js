@@ -7,7 +7,7 @@ export default () => {
 
   api.use("/auth", AuthController);
 
-  api.use("/data", AppController)
+  api.use("/data", AppController);
 
   return api;
 };

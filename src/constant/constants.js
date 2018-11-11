@@ -1,2 +1,4 @@
-export const USER_ROLE_ADMIN = "admin";
-export const USER_ROLE_REGULAR = "user";
+const USER_ROLE_ADMIN = "admin",
+  USER_ROLE_REGULAR = "user";
+
+export { USER_ROLE_ADMIN, USER_ROLE_REGULAR };

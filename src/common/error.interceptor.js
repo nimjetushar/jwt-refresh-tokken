@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * intercepts error and handles app error
  * @export

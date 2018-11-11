@@ -3,6 +3,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
+import compression from "compression";
+import helmet from "helmet";
 
 import initializeDb from "./db";
 import api from "./controllers";
@@ -12,6 +14,7 @@ import errorHandler from "./common/error.interceptor";
 const app = express(),
   server = http.createServer(app);
 
+// middleware
 // logger
 app.use(morgan("dev"));
 
@@ -26,6 +29,9 @@ app.use(
     limit: config.bodyLimit
   })
 );
+
+app.use(compression);
+app.use(helmet);
 
 // connect to db
 initializeDb(config).then(db => {
