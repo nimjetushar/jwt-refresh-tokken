@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./home.component.scss";
-import { getData } from "../../api";
+import { getData, logout } from "../../api";
+import AuthService from "../../service/auth.service";
 
 class HomeComponent extends Component {
   constructor(props) {
@@ -11,19 +12,21 @@ class HomeComponent extends Component {
       errorMsg: "",
       isloading: false
     };
+
+    this.tokenMsg = this.tokenMsg.bind(this);
   }
 
   verifyToken() {
     this.setState({ isloading: true });
     getData()
-      .then(res => {
+      .then(() => {
         this.setState({
           successMsg: "Token is valid",
           errorMsg: "",
           isloading: false
         });
       })
-      .catch(err => {
+      .catch(() => {
         this.setState({
           errorMsg: "Token is invalid",
           successMsg: "",
@@ -44,6 +47,12 @@ class HomeComponent extends Component {
     }
   }
 
+  logout() {
+    logout();
+    new AuthService().logout();
+    this.props.history.push("/");
+  }
+
   navigateToLogin() {
     this.props.history.push("/");
   }
@@ -59,6 +68,12 @@ class HomeComponent extends Component {
           >
             Go to login
           </button>
+          <button
+            className="btn btn-primary ml"
+            onClick={this.logout.bind(this)}
+          >
+            Logout
+          </button>
         </div>
         <div className="spacer">
           <span>Click button to verify token</span>
@@ -69,7 +84,7 @@ class HomeComponent extends Component {
             Verify Token
           </button>
         </div>
-        <div className="spacer">{this.tokenMsg.call(this)}</div>
+        <div className="spacer">{this.tokenMsg()}</div>
       </div>
     );
   }

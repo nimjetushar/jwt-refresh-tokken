@@ -1,5 +1,5 @@
 import { postReq, getReq } from "../service/http.service";
-import { userUrl, loginUrl, dataUrl } from "../constant/url";
+import { userUrl, loginUrl, dataUrl, logoutUrl } from "../constant/url";
 import AuthService from "../service/auth.service";
 
 export function createUser(data) {
@@ -21,4 +21,8 @@ export function login(data) {
 
 export function getData() {
   return getReq(dataUrl);
+}
+
+export function logout() {
+  return getReq(logoutUrl);
 }

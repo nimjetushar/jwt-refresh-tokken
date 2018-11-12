@@ -175,7 +175,7 @@ export function loginUser(req, res, next) {
  * @param {Response} res
  * @param {NextFunction} next
  */
-export function logout(req, res) {
+export function logout(req, res, next) {
   const authToken = req.headers.authorization;
 
   delete tokenStack[authToken];
