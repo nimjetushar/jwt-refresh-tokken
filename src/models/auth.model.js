@@ -1,101 +1,23 @@
 import jwt from "jsonwebtoken";
 
-import UserModel from "../schema/user.schema";
-import { USER_ROLE_REGULAR } from "../constant/constants";
 import errorObj from "../constant/error";
 import config from "../config.json";
 import encrypt from "../common/encrypt";
-import User from "./user.model";
+import Utils from "./utils.model";
+
+class User {
+  getUserCredentail(body) {
+    return {
+      username: body.username,
+      password: body.password,
+      loginTime: new Date().valueOf()
+    };
+  }
+}
 
 const tokenStack = {},
-  userModel = new User(),
-  secretKey = encrypt.secretKey;
-
-/**
- * find the user into db based on the passed criteria
- * @param {*} userObj
- * @returns {Promise<any>}
- */
-function findUser(userObj) {
-  return new Promise((resolve, reject) => {
-    UserModel.find(userObj, (err, user) => {
-      if (err) {
-        return reject({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
-      }
-      return resolve(user);
-    });
-  });
-}
-
-/**
- * verify the user object received and then saves the user onto the db
- * @export
- * @param {Request} req
- * @param {Response} res
- * @param {NextFunction} next
- * @returns {void}
- */
-export function createUser(req, res, next) {
-  const body = req.body,
-    userObj = {
-      name: body.name,
-      email: body.email,
-      password: body.password,
-      role: body.role || USER_ROLE_REGULAR
-    },
-    userData = new UserModel(userObj),
-    error = userData.validateSync();
-
-  if (error) {
-    return next({
-      error: error,
-      status: 400,
-      message: error.message
-    });
-  }
-
-  findUser({ email: body.email })
-    .then(data => {
-      if (data && data.length) {
-        return next(errorObj.USERNAME_EXIST);
-      }
-      encrypt
-        .passwordEncryptionLogic(body.email, body.password)
-        .then(userPwd => {
-          userObj.password = userPwd;
-
-          UserModel.create(userObj, (err, user) => {
-            if (err) {
-              return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
-            }
-            res.json(user);
-          });
-        })
-        .catch(err => {
-          return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
-        });
-    })
-    .catch(err => {
-      return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
-    });
-}
-
-/**
- * provides tokken based on authentication
- * @param {*} reqObj
- * @param {*} jwtConfig
- * @returns
- */
-function jwtSign(reqObj, jwtConfig) {
-  return new Promise((resolve, reject) => {
-    jwt.sign(reqObj, secretKey, jwtConfig, (err, token) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(token);
-    });
-  });
-}
+  secretKey = encrypt.secretKey,
+  userModel = new User();
 
 /**
  * logic to generate auth and reset token at same time
@@ -106,12 +28,14 @@ function tokenCreationLogic(reqObj) {
   const promiseArr = [];
 
   promiseArr.push(
-    jwtSign(reqObj, {
+    Utils.jwtSign(reqObj, {
       expiresIn: config.auth_token_timeout,
       jwtid: `${reqObj.loginTime}`
     })
   );
-  promiseArr.push(jwtSign(reqObj, { expiresIn: config.refresh_token_timeout }));
+  promiseArr.push(
+    Utils.jwtSign(reqObj, { expiresIn: config.refresh_token_timeout })
+  );
   return Promise.all(promiseArr);
 }
 
@@ -127,7 +51,7 @@ export function loginUser(req, res, next) {
   const reqObj = userModel.getUserCredentail(req.body),
     { username, password } = reqObj;
 
-  findUser({ email: username })
+  Utils.findUser({ email: username })
     .then(data => {
       if (data && data.length) {
         const userDetail = data[0];
@@ -193,7 +117,7 @@ export function verifyToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (err, authDecoded) => {
       if (err) {
-        const refreshData = tokenStack[token];
+        const refreshData = Object.assign({}, tokenStack[token]);
 
         if (refreshData) {
           const refreshToken = refreshData.refreshToken;
@@ -208,10 +132,18 @@ export function verifyToken(token) {
                 jwtid: `${reqObj.loginTime}`
               };
 
-            jwtSign(reqObj, jwtOptions)
+            Utils.jwtSign(reqObj, jwtOptions)
               .then(authToken => {
+                delete tokenStack[token];
+
+                tokenStack[authToken] = Object.assign({}, refreshData, {
+                  token: authToken
+                });
+
                 resolve(
-                  Object.assign({}, refreshDecoded, { token: authToken })
+                  Object.assign({}, refreshDecoded, {
+                    token: authToken
+                  })
                 );
               })
               .catch(signErr => {

@@ -1,14 +1,14 @@
-import { postReq, getReq } from "../service/http.service";
+import HttpService from "../service/http.service";
 import { userUrl, loginUrl, dataUrl, logoutUrl } from "../constant/url";
 import AuthService from "../service/auth.service";
 
 export function createUser(data) {
-  return postReq(userUrl, data);
+  return HttpService.postReq(userUrl, data);
 }
 
 export function login(data) {
   return new Promise((resolve, reject) => {
-    postReq(loginUrl, data)
+    HttpService.postReq(loginUrl, data)
       .then(res => {
         new AuthService().setAuthToken(res);
         resolve(res);
@@ -20,9 +20,9 @@ export function login(data) {
 }
 
 export function getData() {
-  return getReq(dataUrl);
+  return HttpService.getReq(dataUrl);
 }
 
 export function logout() {
-  return getReq(logoutUrl);
+  return HttpService.getReq(logoutUrl);
 }

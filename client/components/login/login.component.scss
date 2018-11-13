@@ -1,26 +1,10 @@
 @import "../../styles/variables.scss";
 .login-page-bg {
-    background: #76b852;
-    /* fallback for old browsers */
-    background: -webkit-linear-gradient(right, #76b852, #8dc26f);
-    background: -moz-linear-gradient(right, #76b852, #8dc26f);
-    background: -o-linear-gradient(right, #76b852, #8dc26f);
-    background: linear-gradient(to left, #76b852, #8dc26f);
-    font-family: $font-family;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @extend .app-bg;
 }
 
 .login-page {
-    margin: auto;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: -1;
+    @extend .app-container;
     @extend .login-page-bg;
     .form {
         position: relative;
@@ -64,6 +48,16 @@
         margin: 15px 0 0;
         color: #b3b3b3;
         font-size: 12px;
+        span {
+            cursor: pointer;
+            a {
+                color: #4caf50;
+                &:hover {
+                    color: #4caf50;
+                    text-decoration: none;
+                }
+            }
+        }
     }
     .form .message span {
         color: #4caf50;

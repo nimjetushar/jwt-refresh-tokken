@@ -23,6 +23,7 @@ function reqObj(url, obj, data) {
 
   if (!skipAuthToken(url)) {
     const token = authService.authToken;
+
     headerObj = Object.assign({}, headerObj, { authorization: token });
   }
 
@@ -31,6 +32,7 @@ function reqObj(url, obj, data) {
     data: data,
     url: url
   };
+
   return [url, Object.assign(obj, requestObj)];
 }
 
@@ -39,9 +41,11 @@ function callApi(url, options) {
     axios(options)
       .then(res => {
         const parsedData = res.data;
+
         if (SUCCESS_STATUS_API.includes(res.status)) {
           if (!skipAuthToken(url) && res.headers) {
-            const authToken = res.headers["authorization"];
+            const authToken = res.headers.authorization;
+
             authService.updateAuthToken(authToken);
           }
           resolve(parsedData);
@@ -55,22 +59,28 @@ function callApi(url, options) {
   });
 }
 
-export const getReq = url => {
-  const obj = reqObj(url, { method: "GET" });
-  return callApi(...obj);
-};
+export default class HttpService {
+  static getReq(url) {
+    const obj = reqObj(url, { method: "GET" });
 
-export const postReq = (url, data) => {
-  const obj = reqObj(url, { method: "POST" }, data);
-  return callApi(...obj);
-};
+    return callApi(...obj);
+  }
 
-export const putReq = (url, data) => {
-  const obj = reqObj(url, { method: "PUT" }, data);
-  return callApi(...obj);
-};
+  static postReq(url, data) {
+    const obj = reqObj(url, { method: "POST" }, data);
 
-export const deleteReq = (url, data) => {
-  const obj = reqObj(url, { method: "DELETE" }, data);
-  return callApi(...obj);
-};
+    return callApi(...obj);
+  }
+
+  static putReq(url, data) {
+    const obj = reqObj(url, { method: "PUT" }, data);
+
+    return callApi(...obj);
+  }
+
+  static deleteReq(url, data) {
+    const obj = reqObj(url, { method: "DELETE" }, data);
+
+    return callApi(...obj);
+  }
+}

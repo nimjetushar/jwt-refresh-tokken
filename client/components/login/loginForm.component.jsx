@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 const LoginFormComponent = ({ loginDetail, ...params }) => {
   return (
@@ -26,10 +27,19 @@ const LoginFormComponent = ({ loginDetail, ...params }) => {
         />
         <button type="submit">login</button>
         <p className="message">
-          Not registered?
-          <span onClick={params.toggleForms}>Create an account</span>
+          <span className="pull-left" onClick={params.toggleForms}>
+            Create an account
+          </span>
+          &nbsp;
+          <span className="pull-right">
+            <Link to="resetpassword">Forget password</Link>
+          </span>
         </p>
-        {params.errorMsg ? <p className="message error">{params.errorMsg}</p> : ""}
+        {params.errorMsg ? (
+          <p className="message error">{params.errorMsg}</p>
+        ) : (
+          ""
+        )}
       </form>
     </div>
   );

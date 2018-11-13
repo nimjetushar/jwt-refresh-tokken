@@ -59,32 +59,34 @@ class HomeComponent extends Component {
 
   render() {
     return (
-      <div className="container home-page">
+      <div className="home-page">
         <h2 className="alert alert-info">Login Successfull !!!</h2>
-        <div className="spacer">
-          <button
-            className="btn btn-primary ml"
-            onClick={this.navigateToLogin.bind(this)}
-          >
-            Go to login
-          </button>
-          <button
-            className="btn btn-primary ml"
-            onClick={this.logout.bind(this)}
-          >
-            Logout
-          </button>
+        <div className="card">
+          <div className="spacer">
+            <button
+              className="btn btn-primary ml"
+              onClick={this.navigateToLogin.bind(this)}
+            >
+              Go to login
+            </button>
+            <button
+              className="btn btn-primary ml"
+              onClick={this.logout.bind(this)}
+            >
+              Logout
+            </button>
+          </div>
+          <div className="spacer token-verify">
+            <span>Click button to verify token</span>
+            <button
+              className="btn btn-primary ml"
+              onClick={this.verifyToken.bind(this)}
+            >
+              Verify Token
+            </button>
+          </div>
         </div>
-        <div className="spacer">
-          <span>Click button to verify token</span>
-          <button
-            className="btn btn-primary ml"
-            onClick={this.verifyToken.bind(this)}
-          >
-            Verify Token
-          </button>
-        </div>
-        <div className="spacer">{this.tokenMsg()}</div>
+        <div className="spacer msg">{this.tokenMsg()}</div>
       </div>
     );
   }

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import RegistrationFormComponent from "./registrationForm.component";
 import LoginFormComponent from "./loginForm.component";
-import { createUser, login } from "../../api";
+import { login, createUser } from "../../api";
 
 class LoginComponent extends Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class LoginComponent extends Component {
   login(e) {
     e.preventDefault();
     login(this.state.loginForm)
-      .then(res => {
+      .then(() => {
         this.props.history.push("/home");
       })
       .catch(err => {
@@ -50,11 +50,13 @@ class LoginComponent extends Component {
   createUser(e) {
     e.preventDefault();
     const data = Object.assign({}, this.state.registrationForm);
+
     createUser(data).then(
-      res => {
+      () => {
+        this.toggleForms();
         this.setState({ regForm: Object.assign({}, this.regForm) });
       },
-      err => {
+      () => {
         this.setState({ regForm: Object.assign({}, this.regForm) });
       }
     );
@@ -70,7 +72,7 @@ class LoginComponent extends Component {
       formObj = Object.assign({}, this.state.loginForm);
       currentForm = "loginForm";
     } else {
-      formObj = this.state.registrationForm;
+      formObj = Object.assign({}, this.state.registrationForm);
       currentForm = "registrationForm";
     }
 

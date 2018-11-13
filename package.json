@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build:server && npm run build:client",
-    "build:server": "rimraf dist/server && babel src -s -d dist/server --presets es2015,stage-2",
+    "build:server": "rimraf dist/server && npm run lint &&  babel src -s -d dist/server --presets es2015,stage-2",
     "build:client": "rimraf dist/client && webpack --env.production",
     "server": "nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-2\"",
     "client": "webpack-dev-server --hot",

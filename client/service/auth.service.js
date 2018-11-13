@@ -26,7 +26,7 @@ export default class AuthService {
   }
 
   updateAuthToken(token) {
-    if (token !== _authToken) {
+    if (token && token !== _authToken) {
       _authToken = token;
       sessionStorage.setItem(LS_AUTH_TOKEN, token);
     }

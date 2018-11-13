@@ -34,6 +34,10 @@ const errorObj = {
   INVALID_PASSWORD: {
     status: 401,
     message: "invalid password"
+  },
+  USERNAME_DONT_EXIST: {
+    status: 409,
+    message: "username don't exist"
   }
 };
 
