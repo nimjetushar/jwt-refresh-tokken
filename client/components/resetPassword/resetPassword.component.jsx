@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from "react";
+import { Link } from "react-router-dom";
 import "./resetPassword.component.scss";
+import ApiService from "../../service/api.service";
 
 class ResetPassword extends Component {
   constructor(props) {
@@ -8,10 +10,11 @@ class ResetPassword extends Component {
     this.state = {
       ischangePaswordFrom: false,
       formVal: {
-        username: "",
+        email: "",
         password: "",
         confirmPassword: ""
-      }
+      },
+      resetpasswordDetails: { resetToken: "", email: "" }
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -19,11 +22,53 @@ class ResetPassword extends Component {
   }
 
   handleChange(e) {
-    const { name, value } = e.target;
+    const { name, value } = e.target,
+      formObj = Object.assign({}, this.state.formVal);
+
+    formObj[name] = value;
+    this.setState({ formVal: formObj });
   }
 
   submitForm(e) {
     e.preventDefault();
+
+    if (this.state.ischangePaswordFrom) {
+      const resetPdReqObj = {
+        resetToken: this.state.resetpasswordDetails.resetToken,
+        password: this.state.formVal.password,
+        confirmPassword: this.state.formVal.confirmPassword,
+        email: this.state.resetpasswordDetails.email
+      };
+
+      ApiService.resetPassword(resetPdReqObj).then(
+        res => {
+          console.log(res);
+          this.setState({ message: res.message });
+        },
+        err => {
+          console.log(err);
+          this.setState({ message: err.message });
+        }
+      );
+    } else {
+      const verifyReqObj = { email: this.state.formVal.email };
+
+      ApiService.verifyUser(verifyReqObj).then(
+        res => {
+          this.setState({
+            resetpasswordDetails: {
+              resetToken: res.resetToken,
+              email: res.email
+            },
+            ischangePaswordFrom: true
+          });
+        },
+        err => {
+          console.log(err);
+          this.setState({ message: err.message });
+        }
+      );
+    }
   }
 
   setFormFields() {}
@@ -34,8 +79,8 @@ class ResetPassword extends Component {
           <input
             type="text"
             placeholder="username"
-            name="username"
-            value={this.state.formVal.username}
+            name="email"
+            value={this.state.formVal.email}
             onChange={this.handleChange}
           />
           <button type="submit">Submit</button>
@@ -47,7 +92,7 @@ class ResetPassword extends Component {
             type="text"
             placeholder="password"
             name="password"
-            value={this.state.formVal.username}
+            value={this.state.formVal.password}
             onChange={this.handleChange}
             autoComplete="new-password"
           />
@@ -65,10 +110,20 @@ class ResetPassword extends Component {
 
     return (
       <div className="reset-password-wrapper">
+        <div className="pull-right go-to-login">
+          <Link className="btn btn-info" to="/">
+            Login
+          </Link>
+        </div>
         <div className="form">
           <h4>Reset Password</h4>
           <form onSubmit={this.submitForm.bind(this)}>
             {this.state.ischangePaswordFrom ? changePasswordForm : usernameForm}
+            {this.state.message ? (
+              <p className="alert alert-info">{this.state.message}</p>
+            ) : (
+              ""
+            )}
           </form>
         </div>
       </div>

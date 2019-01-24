@@ -1,10 +1,12 @@
+import jwt from "jsonwebtoken";
 import Utils from "./utils.model";
 import errorObj from "../constant/error";
 import config from "../config.json";
+import Encrypt from "../common/encrypt";
+import UserSchema from "../schema/user.schema";
 
-export function verifyUser(req, res, next) {
-  const { body } = req,
-    { email } = body,
+export function verifyUser({ body }, res, next) {
+  const { email } = body,
     reqObj = { email: email };
 
   Utils.findUser(reqObj)
@@ -26,4 +28,40 @@ export function verifyUser(req, res, next) {
     });
 }
 
-export function resetPassword(req, res, next) {}
+export function resetPassword({ body }, res, next) {
+  const { resetToken, password, confirmPassword, email } = body;
+
+  jwt.verify(resetToken, Encrypt.secretKey, err => {
+    if (err) {
+      return next(errorObj.TOKEN_EXPIRED);
+    }
+
+    if (password !== confirmPassword) {
+      return next(errorObj.PASSWORD_DOES_NOT_MATCH);
+    }
+
+    UserSchema.findOne({ email: email }, (findErr, user) => {
+      if (findErr) {
+        return next({ error: findErr, ...errorObj.INTERNAL_SERVER_ERROR });
+      }
+      if (!user) {
+        return next(errorObj.BAD_REQUEST);
+      }
+      Encrypt.passwordEncryptionLogic(body.email, body.password).then(
+        encrytedPwd => {
+          user.password = encrytedPwd;
+
+          user.save(saveErr => {
+            if (saveErr) {
+              return next({ error: saveErr, ...errorObj.ERROR_ON_UPDATE });
+            }
+            res.json({ message: "password updated successfully" });
+          });
+        },
+        encryptErr => {
+          next({ error: encryptErr, ...errorObj.INTERNAL_SERVER_ERROR });
+        }
+      );
+    });
+  });
+}

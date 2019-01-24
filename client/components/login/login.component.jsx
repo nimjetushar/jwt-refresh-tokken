@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import RegistrationFormComponent from "./registrationForm.component";
 import LoginFormComponent from "./loginForm.component";
-import { login, createUser } from "../../api";
+import ApiService from "../../service/api.service";
 
 class LoginComponent extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ class LoginComponent extends Component {
 
   login(e) {
     e.preventDefault();
-    login(this.state.loginForm)
+    ApiService.login(this.state.loginForm)
       .then(() => {
         this.props.history.push("/home");
       })
@@ -51,7 +51,7 @@ class LoginComponent extends Component {
     e.preventDefault();
     const data = Object.assign({}, this.state.registrationForm);
 
-    createUser(data).then(
+    ApiService.createUser(data).then(
       () => {
         this.toggleForms();
         this.setState({ regForm: Object.assign({}, this.regForm) });

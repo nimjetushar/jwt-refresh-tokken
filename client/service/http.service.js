@@ -54,7 +54,9 @@ function callApi(url, options) {
         }
       })
       .catch(err => {
-        reject(err);
+        const errObj = (err.response && err.response.data) || {};
+
+        return reject(errObj);
       });
   });
 }

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import UserModel from "../schema/user.schema";
+import UserSchema from "../schema/user.schema";
 import errorObj from "../constant/error";
 import Encrypt from "../common/encrypt";
 
@@ -14,7 +14,7 @@ export default class Utils {
    */
   static findUser(userObj) {
     return new Promise((resolve, reject) => {
-      UserModel.find(userObj, (err, user) => {
+      UserSchema.find(userObj, (err, user) => {
         if (err) {
           return reject({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
         }

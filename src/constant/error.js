@@ -38,6 +38,14 @@ const errorObj = {
   USERNAME_DONT_EXIST: {
     status: 409,
     message: "username don't exist"
+  },
+  PASSWORD_DOES_NOT_MATCH: {
+    status: 400,
+    message: "Entered password does not match"
+  },
+  ERROR_ON_UPDATE: {
+    status: 500,
+    message: "Unable to update DB"
   }
 };
 

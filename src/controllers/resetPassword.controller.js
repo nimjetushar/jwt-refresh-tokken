@@ -3,8 +3,8 @@ import { resetPassword, verifyUser } from "../models/resetPassword.model";
 
 const router = Router();
 
-router.get("/verifyUser", verifyUser);
+router.post("/verifyUser", verifyUser);
 
-router.get("/password", resetPassword);
+router.put("/password", resetPassword);
 
 export default router;

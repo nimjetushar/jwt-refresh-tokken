@@ -1,6 +1,6 @@
 import { USER_ROLE_REGULAR } from "../constant/constants";
 import Utils from "./utils.model";
-import UserModel from "../schema/user.schema";
+import UserSchema from "../schema/user.schema";
 import errorObj from "../constant/error";
 import Encrypt from "../common/encrypt";
 
@@ -26,7 +26,7 @@ class User {
 export function createUser(req, res, next) {
   const body = req.body,
     userObj = new User(body).user,
-    userData = new UserModel(userObj);
+    userData = new UserSchema(userObj);
 
   userData.validate(error => {
     if (error) {
@@ -47,7 +47,7 @@ export function createUser(req, res, next) {
           .then(userPwd => {
             userObj.password = userPwd;
 
-            UserModel.create(userObj, (err, user) => {
+            UserSchema.create(userObj, (err, user) => {
               if (err) {
                 return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
               }

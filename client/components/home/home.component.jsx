@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./home.component.scss";
-import { getData, logout } from "../../api";
 import AuthService from "../../service/auth.service";
+import ApiService from "../../service/api.service";
 
 class HomeComponent extends Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class HomeComponent extends Component {
 
   verifyToken() {
     this.setState({ isloading: true });
-    getData()
+    ApiService.getData()
       .then(() => {
         this.setState({
           successMsg: "Token is valid",
@@ -48,7 +48,7 @@ class HomeComponent extends Component {
   }
 
   logout() {
-    logout();
+    ApiService.logout();
     new AuthService().logout();
     this.props.history.push("/");
   }
