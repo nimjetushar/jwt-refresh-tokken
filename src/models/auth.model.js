@@ -117,10 +117,11 @@ export function verifyToken(token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, secretKey, (err, authDecoded) => {
       if (err) {
-        const refreshData = Object.assign({}, tokenStack[token]);
+        const tokenData = tokenStack[token];
 
-        if (refreshData) {
-          const refreshToken = refreshData.refreshToken;
+        if (tokenData) {
+          const refreshData = Object.assign({}, tokenStack[token]),
+            refreshToken = refreshData.refreshToken;
 
           jwt.verify(refreshToken, secretKey, (verifyErr, refreshDecoded) => {
             if (verifyErr) {

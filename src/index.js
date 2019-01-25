@@ -1,7 +1,6 @@
 import http from "http";
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
 import bodyParser from "body-parser";
 import compression from "compression";
 import helmet from "helmet";
@@ -15,9 +14,6 @@ const app = express(),
   server = http.createServer(app);
 
 // middleware
-// logger
-app.use(morgan("dev"));
-
 app.use(
   cors({
     exposedHeaders: config.corsHeaders
