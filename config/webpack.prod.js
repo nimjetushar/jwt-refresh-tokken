@@ -1,8 +1,7 @@
-const webpackMerge = require("webpack-merge");
-const commonConfig = require("./webpack.common.js");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-
-const path = require("path");
+const webpackMerge = require("webpack-merge"),
+ commonConfig = require("./webpack.common.js"),
+ OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin"),
+ path = require("path");
 
 module.exports = webpackMerge(commonConfig, {
   mode: "production",

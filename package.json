@@ -1,7 +1,7 @@
 {
   "name": "jwt-authentication-solution",
   "version": "1.0.0",
-  "description": "End to end authentication solution",
+  "description": "End to end authentication solution using JWT",
   "main": "index.js",
   "scripts": {
     "build": "npm run build:server && npm run build:client",
@@ -9,7 +9,7 @@
     "build:client": "rimraf dist/client && webpack --env.production",
     "server": "nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-2\"",
     "client": "webpack-dev-server --hot",
-    "lint": "eslint src"
+    "lint": "eslint --ext .js,.jsx ./"
   },
   "repository": {
     "type": "git",
@@ -49,6 +49,7 @@
     "babel-preset-stage-2": "6.24.1",
     "css-loader": "1.0.0",
     "eslint": "5.6.1",
+    "eslint-config-react": "1.1.7",
     "eslint-loader": "2.1.1",
     "eslint-plugin-react": "7.11.1",
     "file-loader": "2.0.0",

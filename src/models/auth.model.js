@@ -99,6 +99,7 @@ export function loginUser(req, res, next) {
  * @param {Response} res
  * @param {NextFunction} next
  */
+// eslint-disable-next-line no-unused-vars
 export function logout(req, res, next) {
   const authToken = req.headers.authorization;
 

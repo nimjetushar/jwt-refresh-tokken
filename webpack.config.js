@@ -1,8 +1,4 @@
 module.exports = env => {
-    if (env && env.production) {
-      return require("./config/webpack.prod");
-    } else {
-      return require("./config/webpack.dev");
-    }
-  };
-  
+  // eslint-disable-next-line global-require
+  return (env && env.production) ? require("./config/webpack.prod") : require("./config/webpack.dev");
+};

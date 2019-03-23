@@ -1,8 +1,12 @@
-export const base_url = "http://localhost:8080/api";
+const baseUrl = "http://localhost:8080/api",
+    loginUrl = `${baseUrl}/auth/login`,
+    userUrl = `${baseUrl}/auth/create`,
+    dataUrl = `${baseUrl}/data`,
+    logoutUrl = `${baseUrl}/auth/logout`,
+    verifyUserUrl = `${baseUrl}/reset/verifyUser`,
+    resetPasswordUrl = `${baseUrl}/reset/password`;
 
-export const loginUrl = `${base_url}/auth/login`;
-export const userUrl = `${base_url}/auth/create`;
-export const dataUrl = `${base_url}/data`;
-export const logoutUrl = `${base_url}/auth/logout`;
-export const verifyUserUrl = `${base_url}/reset/verifyUser`;
-export const resetPasswordUrl = `${base_url}/reset/password`;
+export {
+    baseUrl, loginUrl, userUrl,
+    dataUrl, logoutUrl, verifyUserUrl, resetPasswordUrl
+};

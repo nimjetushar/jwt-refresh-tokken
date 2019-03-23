@@ -1,6 +1,6 @@
-export const LS_AUTH_TOKEN = "LS_AUTH_TOKEN";
-export const LS_USER_DETAIL = "LS_USER_DETAIL";
+const LS_AUTH_TOKEN = "LS_AUTH_TOKEN",
+    LS_USER_DETAIL = "LS_USER_DETAIL",
+    EXCLUDE_AUTH_TOKEN = ["/login", "/reset"],
+    SUCCESS_STATUS_API = [200, 201];
 
-export const EXCLUDE_AUTH_TOKEN = ["/login", "/reset"];
-
-export const SUCCESS_STATUS_API = [200, 201];
+export { LS_AUTH_TOKEN, LS_USER_DETAIL, EXCLUDE_AUTH_TOKEN, SUCCESS_STATUS_API };
