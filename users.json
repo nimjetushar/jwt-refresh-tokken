@@ -1,0 +1,2 @@
+{"_id":{"$oid":"5e4fc1c83f09dc086827142a"},"name":"admin","email":"admin","password":"$2a$10$ZnLrsNo5PK8pZ4g7T6Jqr.HjmRm/FplIsQm1Fl6Ag2JmRsI3Rv45C","role":"admin","__v":0}
+{"_id":{"$oid":"5e4fc5685de8270748b5f339"},"name":"tushar","email":"tushar","password":"$2a$10$SwVIVGjXsRUsS8NOtcugfORvNgyWZjy9E.C8d8O6lnevftB70GtS.","role":"user","__v":0}

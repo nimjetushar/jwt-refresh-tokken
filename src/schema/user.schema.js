@@ -15,6 +15,6 @@ const userSchema = new mongoose.Schema({
     },
     role: String
   }),
-  UserSchema = mongoose.model("User_detail", userSchema);
+  UserSchema = mongoose.model("user", userSchema);
 
 export default UserSchema;
