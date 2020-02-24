@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin"),
 
 module.exports = {
   entry: {
-    vender: "./client/vender.js",
+    vendor: "./client/vendor.js",
     app: "./client/main.js"
   },
 

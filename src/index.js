@@ -9,6 +9,7 @@ import initializeDb from "./db";
 import api from "./controllers";
 import config from "./config.json";
 import errorHandler from "./common/error.interceptor";
+import path from 'path';
 
 const app = express(),
   server = http.createServer(app);
@@ -33,6 +34,12 @@ app.use(helmet());
 initializeDb(config).then(db => {
   // api router
   app.use("/api", api({ config, db }));
+
+  app.use(express.static(__dirname + './../dist/client'));
+
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname + './../dist/client', 'index.html'));
+  });
 
   app.use(errorHandler);
 
