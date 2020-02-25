@@ -4,9 +4,8 @@
   "description": "End to end authentication solution using JWT",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:server && npm run build:client",
-    "build:server": "rimraf dist/server &&  babel src -s -d dist/server --presets es2015,stage-2",
-    "build:client": "rimraf dist/client && webpack --env.production",
+    "build": "gulp",
+    "build:client": "webpack --env.production",
     "server": "nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-2\"",
     "client": "webpack-dev-server --hot",
     "lint": "eslint --ext .js,.jsx ./"
@@ -48,23 +47,26 @@
     "babel-preset-react": "6.24.1",
     "babel-preset-stage-2": "6.24.1",
     "css-loader": "1.0.0",
+    "del": "5.1.0",
     "eslint": "5.6.1",
     "eslint-config-react": "1.1.7",
     "eslint-loader": "2.1.1",
     "eslint-plugin-react": "7.11.1",
     "file-loader": "2.0.0",
+    "gulp": "4.0.2",
+    "gulp-babel": "7.0.1",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
     "mini-css-extract-plugin": "0.4.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "4.13.1",
     "nodemon": "1.9.2",
     "optimize-css-assets-webpack-plugin": "5.0.1",
-    "rimraf": "2.6.2",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.1",
     "webpack": "4.19.0",
     "webpack-cli": "3.1.0",
     "webpack-dev-server": "3.1.11",
-    "webpack-merge": "4.1.4"
+    "webpack-merge": "4.1.4",
+    "webpack-stream": "5.2.1"
   }
 }

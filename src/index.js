@@ -7,7 +7,7 @@ import helmet from "helmet";
 
 import initializeDb from "./db";
 import api from "./controllers";
-import config from "./config.json";
+import config from "./config";
 import errorHandler from "./common/error.interceptor";
 import path from 'path';
 
@@ -35,10 +35,10 @@ initializeDb(config).then(db => {
   // api router
   app.use("/api", api({ config, db }));
 
-  app.use(express.static(__dirname + './../dist/client'));
+  app.use(express.static(__dirname + './client'));
 
   app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + './../dist/client', 'index.html'));
+    res.sendFile(path.join(__dirname + './client', 'index.html'));
   });
 
   app.use(errorHandler);

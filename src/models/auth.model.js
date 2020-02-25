@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 import errorObj from "../constant/error";
-import config from "../config.json";
+import config from "../config";
 import encrypt from "../common/encrypt";
 import Utils from "./utils.model";
 

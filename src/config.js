@@ -1,4 +1,4 @@
-{
+const config = {
   "port": 8080,
   "bodyLimit": "100kb",
   "corsHeaders": ["Link"],
@@ -7,3 +7,5 @@
   "refresh_token_timeout": "1d",
   "reset_token_timeout": 900
 }
+
+export default config;
