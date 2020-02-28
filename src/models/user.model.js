@@ -51,7 +51,7 @@ export function createUser(req, res, next) {
               if (err) {
                 return next({ error: err, ...errorObj.INTERNAL_SERVER_ERROR });
               }
-              res.json(user);
+              res.json({ message: `${user.name} create successfully.` });
             });
           })
           .catch(err => {
