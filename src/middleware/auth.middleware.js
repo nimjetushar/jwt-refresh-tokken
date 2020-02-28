@@ -1,7 +1,7 @@
 import { verifyToken } from "../models/auth.model";
 import errorObj from "../constant/error";
 
-const isUserAuthenticated = function(req, res, next) {
+const isUserAuthenticated = function (req, res, next) {
   const token = req.headers.authorization;
 
   verifyToken(token)

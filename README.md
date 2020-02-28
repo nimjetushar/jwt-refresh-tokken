@@ -13,24 +13,18 @@ It covers following points:-
  
 The implementaion is based on JWT tokken having concept of refresh tokken and auth tokken to keep user authenticated and reset token in case of password reset.
 
-Server implementation can be verified using client. Client application is present in ```/client```.
+Server implementation can be verified using Client application which is present in `/client`.
 
 ## Usefull commands
 
 Start client locally
-```
-npm run client
-```
+```npm run client```
 
 Start server locally
-```
-npm run server
-```
+```npm run server```
 
 Build client and server
-```
-npm run build
-```
+```npm run build```
 
 ## Licence
 
