@@ -26,7 +26,7 @@ Request: {  name: string;
             password: string;   }
 Success: Return user success message
 ```
-### Login
+### Login to create authorization token
 ```
 Request: POST
 api: /api/auth/login
@@ -38,13 +38,40 @@ Success: {  email: string;
             token: string;
             loginTime: number;  }
 ```
-### Logout
+### Logout and to delete authorised token for that particular session
 ```
 Request: GET
 api: /api/auth/logout
 
 Require "authorization" Header with recived token
 ```
+### Verify User before changing password and issue reset token to process for change password
+```
+Verifies if user exists and sends reset token which can be used to reset password by <b>password</b> serivice
+Request: POST
+api: /api/reset/verifyUser
+Request: {  email: string; }
+Success: {  resetToken: string;
+            email: string;  }
+```
+### Change user password
+```
+Takes reset token which is send by <b>verifyUser</b> service 
+Request: POST
+api: /api/reset/password
+Request: {  resetToken: string;
+            password: string;
+            confirmPassword: string;
+            email: string;  }
+```
+### Verify received authorization token
+```
+Request: POST
+api: /api/auth/verify
+
+Require "authorization" Header with recived token
+```
+
 The implementaion is based on JWT tokken having concept of refresh tokken and auth tokken to keep user authenticated and reset token in case of password reset.
 
 Server implementation can be verified using Client application which is present in `/client`.

@@ -70,10 +70,10 @@ app.use((0, _helmet2.default)());
   // api router
   app.use("/api", (0, _controllers2.default)({ config: _config2.default, db: db }));
 
-  app.use(_express2.default.static(__dirname + './client'));
+  app.use(_express2.default.static(__dirname + '/client'));
 
   app.get('/', function (req, res) {
-    res.sendFile(_path2.default.join(__dirname + './client', 'index.html'));
+    res.sendFile(_path2.default.join(__dirname + '/client', 'index.html'));
   });
 
   app.use(_error2.default);
