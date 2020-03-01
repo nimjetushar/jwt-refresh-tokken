@@ -38,25 +38,25 @@ Success: {  email: string;
             token: string;
             loginTime: number;  }
 ```
-### Logout and to delete authorised token for that particular session
+### Logout from that particular session
 ```
 Request: GET
 api: /api/auth/logout
 
 Require "authorization" Header with recived token
 ```
-### Verify User before changing password and issue reset token to process for change password
+### Verify user before changing password and issue reset token to process for change password request
 ```
-Verifies if user exists and sends reset token which can be used to reset password by <b>password</b> serivice
+Verifies if user exists and sends reset token which can be used to reset password by password serivice
 Request: POST
 api: /api/reset/verifyUser
 Request: {  email: string; }
 Success: {  resetToken: string;
             email: string;  }
 ```
-### Change user password
+### Upadate user password
 ```
-Takes reset token which is send by <b>verifyUser</b> service 
+Takes reset token which is send by verifyUser service 
 Request: POST
 api: /api/reset/password
 Request: {  resetToken: string;
@@ -71,6 +71,26 @@ api: /api/auth/verify
 
 Require "authorization" Header with recived token
 ```
+### Options
+Application configurations can be updated using config.js
+
+1: Port
+Default port is 8080 but can be updated as required.
+
+2: db_url
+DB url where authorization collection is present.
+
+3: auth_token_timeout
+Duration for which auth token send to client side will be valid.
+Default is 1 day.
+
+4: refresh_token_timeout
+Duration for which refresh token will be valid which stats a logined user will be valid into application.
+Default is 2 days.
+
+5: reset_token_timeout
+Duration for which password reset token is valid.
+Default 5 min.
 
 The implementaion is based on JWT tokken having concept of refresh tokken and auth tokken to keep user authenticated and reset token in case of password reset.
 
