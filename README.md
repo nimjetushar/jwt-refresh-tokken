@@ -43,7 +43,7 @@ Success: {  email: string;
 Request: GET
 api: /api/auth/logout
 
-Require "authorization" Header with recived token
+Require "authorization" Header with recived token.
 ```
 ### Verify user before changing password and issue reset token to process for change password request
 ```
@@ -69,8 +69,17 @@ Request: {  resetToken: string;
 Request: POST
 api: /api/auth/verify
 
-Require "authorization" Header with recived token
+Require "authorization" Header with recived token.
 ```
+### Client UI
+```
+Request: GET
+api: /
+
+Return client application which can be used to login / create user / change password.
+```
+
+
 ### Options
 Application configurations can be updated using config.js
 
