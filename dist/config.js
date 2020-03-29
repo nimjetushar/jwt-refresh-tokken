@@ -8,9 +8,9 @@ var config = {
   "bodyLimit": "100kb",
   "corsHeaders": ["Link"],
   "db_url": "mongodb://localhost:27017/authorization",
-  "auth_token_timeout": 80,
-  "refresh_token_timeout": "1d",
-  "reset_token_timeout": 900
+  "auth_token_timeout": 86400000,
+  "refresh_token_timeout": "2d",
+  "reset_token_timeout": 300000
 };
 
 exports.default = config;
